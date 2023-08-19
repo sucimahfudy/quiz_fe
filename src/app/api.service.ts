@@ -5,7 +5,7 @@ import { HttpClient } from '@angular/common/http';
   providedIn: 'root',
 })
 export class ApiService {
-  private apiUrl = 'http://localhost:3000';
+  private apiUrl = 'https://quiz-be-git-sucimahfudy-dev.apps.sandbox-m4.g2pi.p1.openshiftapps.com';
 
   constructor(private http: HttpClient) {}
 
