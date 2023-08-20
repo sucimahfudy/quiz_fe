@@ -43,17 +43,30 @@ export class QuizComponent implements OnInit {
   }
 
   nextQuestion() {
-    if (this.quizStarted) {
-      if (this.selectedOption) {
-        this.submittedAnswers.push({
-          question: this.questions[this.currentQuestionIndex].question,
-          answer: this.selectedOption,
-        });
-        this.selectedOption = null;
-        this.currentQuestionIndex++;
+  if (this.quizStarted) {
+    if (this.selectedOption) {
+      const currentQuestion = this.questions[this.currentQuestionIndex];
+      const submittedAnswer = this.submittedAnswers.find(answer => answer.question === currentQuestion.question);
+
+      if (submittedAnswer && submittedAnswer.answer === this.selectedOption) {
+        // If the submitted answer is same as the selected option, decrement the score
+        this.score--;
       }
+
+      // Push the new answer
+      this.submittedAnswers = this.submittedAnswers.filter(answer => answer.question !== currentQuestion.question); // Remove existing answer
+      this.submittedAnswers.push({
+        question: currentQuestion.question,
+        answer: this.selectedOption,
+      });
+      
+      // Move to the next question
+      this.selectedOption = null;
+      this.currentQuestionIndex++;
     }
   }
+}
+
 
   
   previousQuestion() {
