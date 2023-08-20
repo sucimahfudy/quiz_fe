@@ -64,8 +64,15 @@ export class QuizComponent implements OnInit {
   }
 
   submitQuiz(): void {
+    if (this.selectedOption) {
+      this.submittedAnswers.push({
+        question: this.questions[this.currentQuestionIndex].question,
+        answer: this.selectedOption,
+      });
+    }
     this.score = this.calculateScore();
   }
+  
   
   calculateScore(): number {
     let score = 0;
@@ -73,12 +80,16 @@ export class QuizComponent implements OnInit {
       const question = this.questions.find(
         (q) => q.question === answer.question
       );
+      console.log("Submitted Answer:", answer.answer);
+      console.log("Correct Answer:", question?.answer);
       if (question && answer.answer === question.answer) {
-        score++;
+        score++;console.log("Score:", score);
       }
     }
+    console.log("Final Score:", score);
     return score;
   }
+  
   
 
   retakeQuiz(): void {
