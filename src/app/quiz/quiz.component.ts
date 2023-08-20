@@ -54,29 +54,13 @@ export class QuizComponent implements OnInit {
       }
     }
   }
-
-
+  
   previousQuestion() {
-  if (this.quizStarted && this.currentQuestionIndex > 0) {
-    const currentQuestion = this.questions[this.currentQuestionIndex];
-    const submittedAnswer = this.submittedAnswers.find(answer => answer.question === currentQuestion.question);
-
-    if (submittedAnswer && submittedAnswer.answer === currentQuestion.answer) {
-      // If the previous answer was correct, decrement the score
-      this.score--;
+    if (this.quizStarted && this.currentQuestionIndex > 0) {
+      this.currentQuestionIndex--;
+      this.selectedOption = null;
     }
-
-    this.currentQuestionIndex--;
-    this.selectedOption = submittedAnswer ? submittedAnswer.answer : null;
   }
-}
-
-  // previousQuestion() {
-  //   if (this.quizStarted && this.currentQuestionIndex > 0) {
-  //     this.currentQuestionIndex--;
-  //     this.selectedOption = null;
-  //   }
-  // }
 
   submitQuiz(): void {
     if (this.selectedOption) {
