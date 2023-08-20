@@ -9,10 +9,12 @@ import { ApiService } from '../api.service';
 
 export class QuizComponent implements OnInit {
   questions: any[] = [];
-  submittedAnswers: any[] = [];
   currentQuestionIndex: number = 0;
   selectedOption: string | null = null;
   score: number | null = null;
+  playerName: string = '';
+  submittedAnswers: { question: string; answer: string }[] = [];
+  quizStarted: boolean = false;
 
   constructor(private apiService: ApiService) {}
 
@@ -26,14 +28,38 @@ export class QuizComponent implements OnInit {
     this.selectedOption = option;
   }
 
-  nextQuestion(): void {
-    if (this.selectedOption) {
-      this.submittedAnswers.push({
-        question: this.questions[this.currentQuestionIndex].question,
-        answer: this.selectedOption,
-      });
+  startQuiz() {
+    // Reset the quiz state
+    this.currentQuestionIndex = 0;
+    this.selectedOption = null;
+    this.score = null;
+    this.submittedAnswers = []; // Reset submittedAnswers
+
+    // Start the quiz
+    this.quizStarted = true;
+
+    // Move to the first question
+    this.nextQuestion();
+  }
+
+  nextQuestion() {
+    if (this.quizStarted) {
+      if (this.selectedOption) {
+        this.submittedAnswers.push({
+          question: this.questions[this.currentQuestionIndex].question,
+          answer: this.selectedOption,
+        });
+        this.selectedOption = null;
+        this.currentQuestionIndex++;
+      }
+    }
+  }
+
+  
+  previousQuestion() {
+    if (this.quizStarted && this.currentQuestionIndex > 0) {
+      this.currentQuestionIndex--;
       this.selectedOption = null;
-      this.currentQuestionIndex++;
     }
   }
 

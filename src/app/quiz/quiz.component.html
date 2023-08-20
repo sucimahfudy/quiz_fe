@@ -1,49 +1,61 @@
-<div *ngIf="questions.length > 0; else noQuestions">
-  <div class="container mt-4">
-    <div class="row justify-content-center">
-      <div class="col-md-8">
-        <div class="card">
-          <div class="card-body">
-            <div *ngIf="currentQuestionIndex < questions.length">
-              <div class="question-progress">
-                Question {{ currentQuestionIndex + 1 }} / {{ questions.length }}
+<div class="container mt-5">
+  <div class="d-flex justify-content-center row">
+    <div class="col-md-10 col-lg-10">
+      <div class="border">
+        <div class="question bg-white p-3 border-bottom">
+          <div class="d-flex flex-row justify-content-between align-items-center mcq">
+            <h4>JTI TechCamp Quiz</h4><span>({{ currentQuestionIndex + 1 }} of {{ questions.length }})</span>
+          </div>
+        </div>
+        <div *ngIf="!quizStarted" class="question bg-white p-3 border-bottom">
+          <div class="d-flex flex-row align-items-center question-title">
+            <h3 class="text-danger">Player Name:</h3>
+            <input type="text" class="form-control ml-2" [(ngModel)]="playerName">
+          </div>
+          <button class="btn btn-primary mt-3" [disabled]="playerName === ''" (click)="startQuiz()">Start Quiz</button>
+        </div>
+        <div *ngIf="currentQuestionIndex < questions.length && quizStarted" class="question bg-white p-3 border-bottom">
+          <div class="d-flex flex-row align-items-center question-title">
+            <h3 class="text-danger">Q.</h3>
+            <h5 class="mt-1 ml-2">{{ questions[currentQuestionIndex].question }}</h5>
+          </div>
+          <div class="ans ml-2">
+            <div class="options">
+              <div class="form-check" *ngFor="let option of questions[currentQuestionIndex].options">
+                <label class="form-check-label">
+                  <input
+                    type="radio"
+                    name="selectedOption"
+                    class="form-check-input"
+                    [value]="option"
+                    (change)="selectOption(option)"
+                    [checked]="selectedOption === option"
+                  />
+                  {{ option }}
+                </label>
               </div>
-              <h3 class="card-title">{{ questions[currentQuestionIndex].question }}</h3>
-              <div class="options">
-                <div class="form-check" *ngFor="let option of questions[currentQuestionIndex].options">
-                  <label class="form-check-label">
-                    <input
-                      type="radio"
-                      name="selectedOption"
-                      class="form-check-input"
-                      [value]="option"
-                      (change)="selectOption(option)"
-                      [checked]="selectedOption === option"
-                    />
-                    {{ option }}
-                  </label>
-                </div>
-              </div>
-              <button class="btn btn-primary" [disabled]="!selectedOption" (click)="nextQuestion()">
-                Next
-              </button>
             </div>
-            <div *ngIf="currentQuestionIndex === questions.length" class="text-center">
-              <h3>Quiz Completed!</h3>
-              <button class="btn btn-success" (click)="submitQuiz()">Submit</button>
-            </div>
-            <div *ngIf="score !== null" class="text-center mt-4">
-              <h3>Quiz Results</h3>
-              <p>Your score: {{ score }} / {{ questions.length }}</p>
-              <button class="btn btn-secondary" (click)="retakeQuiz()">Retake Quiz</button>
-            </div>
+        </div>
+        <div *ngIf="currentQuestionIndex < questions.length - 1 && quizStarted" class="d-flex flex-row justify-content-between align-items-center p-3 bg-white">
+          <button class="btn btn-primary d-flex align-items-center btn-danger" type="button" *ngIf="currentQuestionIndex > 0" (click)="previousQuestion()">
+            <i class="fa fa-angle-left mt-1 mr-1"></i>&nbsp;Previous
+          </button>
+          <button class="btn btn-primary border-success align-items-center btn-success" type="button" [disabled]="!selectedOption" (click)="nextQuestion()">
+            Next<i class="fa fa-angle-right ml-2"></i>
+          </button>
+        </div>
+        <div *ngIf="currentQuestionIndex === questions.length - 1 && quizStarted" class="text-center mt-4">
+          <button class="btn btn-primary border-success align-items-center btn-success" type="button" (click)="submitQuiz()">Submit</button>
+        </div>
+        
+        <div *ngIf="score !== null" class="card mt-4" [hidden]="currentQuestionIndex < questions.length - 1">
+          <div class="card-body text-center">
+            <h3>Quiz Results</h3>
+            <p>{{ playerName }}, your score: {{ score }} / {{ questions.length }}</p>
+            <button class="btn btn-secondary" (click)="retakeQuiz()">Retake Quiz</button>
           </div>
         </div>
       </div>
     </div>
   </div>
 </div>
-
-<ng-template #noQuestions>
-  <p class="text-center">No questions available.</p>
-</ng-template>
