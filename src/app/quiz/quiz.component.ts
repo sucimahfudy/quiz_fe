@@ -42,39 +42,41 @@ export class QuizComponent implements OnInit {
     this.nextQuestion();
   }
 
-  nextQuestion() {
-  if (this.quizStarted) {
-    if (this.selectedOption) {
-      const currentQuestion = this.questions[this.currentQuestionIndex];
-      const submittedAnswer = this.submittedAnswers.find(answer => answer.question === currentQuestion.question);
-
-      if (submittedAnswer && submittedAnswer.answer === this.selectedOption) {
-        // If the submitted answer is same as the selected option, decrement the score
-        this.score--;
+   nextQuestion() {
+    if (this.quizStarted) {
+      if (this.selectedOption) {
+        this.submittedAnswers.push({
+          question: this.questions[this.currentQuestionIndex].question,
+          answer: this.selectedOption,
+        });
+        this.selectedOption = null;
+        this.currentQuestionIndex++;
       }
-
-      // Push the new answer
-      this.submittedAnswers = this.submittedAnswers.filter(answer => answer.question !== currentQuestion.question); // Remove existing answer
-      this.submittedAnswers.push({
-        question: currentQuestion.question,
-        answer: this.selectedOption,
-      });
-      
-      // Move to the next question
-      this.selectedOption = null;
-      this.currentQuestionIndex++;
     }
+  }
+
+
+  previousQuestion() {
+  if (this.quizStarted && this.currentQuestionIndex > 0) {
+    const currentQuestion = this.questions[this.currentQuestionIndex];
+    const submittedAnswer = this.submittedAnswers.find(answer => answer.question === currentQuestion.question);
+
+    if (submittedAnswer && submittedAnswer.answer === currentQuestion.answer) {
+      // If the previous answer was correct, decrement the score
+      this.score--;
+    }
+
+    this.currentQuestionIndex--;
+    this.selectedOption = submittedAnswer ? submittedAnswer.answer : null;
   }
 }
 
-
-  
-  previousQuestion() {
-    if (this.quizStarted && this.currentQuestionIndex > 0) {
-      this.currentQuestionIndex--;
-      this.selectedOption = null;
-    }
-  }
+  // previousQuestion() {
+  //   if (this.quizStarted && this.currentQuestionIndex > 0) {
+  //     this.currentQuestionIndex--;
+  //     this.selectedOption = null;
+  //   }
+  // }
 
   submitQuiz(): void {
     if (this.selectedOption) {
